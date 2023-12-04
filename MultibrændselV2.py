@@ -30,9 +30,9 @@ efficiencyDamp = 0.80 #Damp på tårn 2.
 
 #El afgifter
 elAfgiftPerkWh = 0.69 #DKK pr. kWh
-lavLastEL = 0.022 #DKK pr. kWh
-højLastEL = 0.067 #DKK pr. kWh
-spidsLastEL = 0.135 #DKK pr. kWh
+lavLastEL = 0.0096 #DKK pr. kWh
+højLastEL = 0.0288 #DKK pr. kWh
+spidsLastEL = 0.0576 #DKK pr. kWh
 systemTarif = 0.054 #DKK pr. kWh
 transmisstionEl = 0.058  #DKK pr. kWh
 
@@ -82,7 +82,7 @@ dayCounter = 0
 #print("El afgift lav last: " + str(ElSpotPrices))
 for gas_entry in GasSpotPrices:
     gas_entry_date = datetime.strptime(gas_entry['GasDay'], "%Y-%m-%dT%H:%M:%S").strftime("%Y-%m-%d")
-    print(gas_entry)
+    #print(gas_entry)
 
     filtered_electricity_entries = [electricity_entry for electricity_entry in ElSpotPrices if electricity_entry['HourDK'].startswith(gas_entry_date)]
     #print(filtered_electricity_entries)
@@ -97,6 +97,8 @@ for gas_entry in GasSpotPrices:
     
     #fixedGasPrice = gas_entry['EEXSpotIndexEUR_MWh']/1000*7.5 + gasafgift
     fixedGasPrice = (gas_entry['PurchasePriceDKK_kWh'] + gasafgift) * 1.05
+    #fixedGasPrice = (gas_entry['PurchasePriceDKK_kWh'] + gasafgift) * 1.20
+
     #fixedGasPrice = (gasPrisGennemsnit + gasafgift)/10.55
     #fixedGasPrice = 0.5086
 
@@ -119,14 +121,15 @@ for gas_entry in GasSpotPrices:
         isWeekend = datetime.strptime(gas_entry_date, "%Y-%m-%d").weekday() in [0, 6]
         is_summer = 4 <= datetime.strptime(gas_entry_date, "%Y-%m-%d").month < 10
         
+        
         if (is_summer):
             #print(gas_entry_date)
             if '00:00' <= electricity_entry_time <= '05:00':
                 tarif = elAfgiftLavLast
             elif '06:00' <= electricity_entry_time <= '21:00' and not isWeekend:
-                tarif = elAfgiftHøjLast
+                tarif = elAfgiftLavLast
             else:
-                tarif = elAfgiftHøjLast            
+                tarif = elAfgiftLavLast            
         else:
             if '00:00' <= electricity_entry_time <= '05:00':
                 tarif = elAfgiftLavLast
@@ -134,8 +137,10 @@ for gas_entry in GasSpotPrices:
                 tarif = elAfgiftSpidsLast
             else:
                 tarif = elAfgiftHøjLast
-
+                
+        #print(electricity_entry)
         ElectricitySpotPriceList.append((electricity_entry['SpotPriceDKK'] / 1000) + tarif) 
+        #ElectricitySpotPriceList.append(0.42 + tarif) 
         calculatePricesWhenHour = ['02:00', '04:00', '06:00', '08:00', '10:00', '12:00', '14:00', '16:00', '18:00', '20:00', '22:00', '23:59']
         if electricity_entry_time in calculatePricesWhenHour:
             ElectricitySpotPriceAverage = round(sum(ElectricitySpotPriceList) / len(ElectricitySpotPriceList), 4)
