@@ -20,6 +20,8 @@ start_date = '2023-04-01T00:00'
 end_date = '2023-11-01T00:00'
 
 
+#1 m3 = 10.55 kwh
+
 
 minimumRunTime = 2 # 1-24 hr - NULL INDEX!
 minimumPriceDifference = 0.1 # DKK 10 øre
@@ -54,7 +56,6 @@ gasafgift = (co2afgift + noxafgift + disturbutionGas + naturGasAfgift + kapacite
 lavLast = 0.0652
 højLast = 0.1957
 spidsLast = 0.587
-
 
 
 # Gas spot prices API request
@@ -120,8 +121,6 @@ for gas_entry in GasSpotPrices:
         
         isWeekend = datetime.strptime(gas_entry_date, "%Y-%m-%d").weekday() in [0, 6]
         is_summer = 4 <= datetime.strptime(gas_entry_date, "%Y-%m-%d").month < 10
-        
-        
         if (is_summer):
             #print(gas_entry_date)
             if '00:00' <= electricity_entry_time <= '05:00':
