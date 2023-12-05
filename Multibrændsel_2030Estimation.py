@@ -22,7 +22,6 @@ end_date = '2023-11-01T00:00'
 
 #1 m3 = 10.55 kwh
 
-
 minimumRunTime = 2 # 1-24 hr - NULL INDEX!
 minimumPriceDifference = 0.1 # DKK 10 øre
 efficiencyElectricity = 1 # 0-1
@@ -31,14 +30,12 @@ efficiencyOil = 1 # 0-1
 efficiencyDamp = 0.80 #Damp på tårn 2. 
 
 #El afgifter
-elAfgiftPerkWh = 0.69 #DKK pr. kWh
+elAfgiftPerkWh = 0.561 #DKK pr. kWh - fald
 lavLastEL = 0.0096 #DKK pr. kWh
 højLastEL = 0.0288 #DKK pr. kWh
 spidsLastEL = 0.0576 #DKK pr. kWh
-systemTarif = 0.054 #DKK pr. kWh
-transmisstionEl = 0.058  #DKK pr. kWh
-fastPrisAftale = 0.42 #DKK pr. kWh
-fastPrisProcentage = 0.34 #The total used kWh, the fastpris count for 34%
+systemTarif = 0.076 #DKK pr. kWh - stigning
+transmisstionEl = 0.078  #DKK pr. kWh
 
 elAfgiftLavLast = elAfgiftPerkWh + lavLastEL + systemTarif + transmisstionEl
 elAfgiftHøjLast = elAfgiftPerkWh + højLastEL + systemTarif + transmisstionEl
@@ -46,7 +43,7 @@ elAfgiftSpidsLast = elAfgiftPerkWh + spidsLastEL + systemTarif + transmisstionEl
 
 #Gas afgifter
 gasPrisGennemsnit = 5.41 #pr. m3
-co2afgift = 0.41 #DKK pr. m3
+co2afgift = 1.84 #DKK pr. m3 -
 noxafgift = 0.09 #DKK pr. m3
 disturbutionGas = 0.74 #DKK pr. m3
 naturGasAfgift = 2.431 #DKK pr. m3
@@ -105,7 +102,7 @@ for gas_entry in GasSpotPrices:
     #fixedGasPrice = (gasPrisGennemsnit + gasafgift)/10.55
     #fixedGasPrice = 0.5086
 
-    #fixedGasPrice = round(((fastPrisAftale / fastPrisProcentage) + (gas_entry['PurchasePriceDKK_kWh'] / (1 - fastPrisProcentage)) + gasafgift) / efficiencyGas, 3)  
+
     #print("shift")
     
     for electricity_entry in filtered_electricity_entries:
@@ -164,7 +161,7 @@ matrix = [list(dict.fromkeys(existing_header))] + matrix
 
 
 # Output CSV file
-csv_file_path = 'Table.csv'
+csv_file_path = 'Table_2030Estimation.csv'
 
 # Write matrix to CSV file
 with open(csv_file_path, 'w', newline='') as csvfile:
